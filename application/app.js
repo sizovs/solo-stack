@@ -5,7 +5,6 @@ import session from '@fastify/secure-session'
 import { initAdmin } from "./routes/admin.js"
 import { initTodos } from "./routes/todos.js"
 import { logger } from "./modules/logger.js"
-import { Migrator } from "./modules/database/migrator.js"
 import { errors } from './modules/errors.js'
 import { Layout } from './views/Layout.js'
 import { Alert } from './views/Alert.js'
@@ -92,17 +91,22 @@ export const startApp = async (options = { port: 0 }) => {
   })
 
   // CSRF protection
-  app.addHook('preHandler', async (request, reply) => {
-    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
-      const whitelist = []
-      const websiteOrigin = request.protocol + '://' + request.host
-      const requestOrigin = request.headers.origin
-      const isForeignOrigin = requestOrigin !== websiteOrigin
-      if (isForeignOrigin && !whitelist.includes(requestOrigin)) {
-        return reply.code(403).send('Cross-site requests are forbidden')
-      }
+  app.addHook("preHandler", async (request, reply) => {
+    const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
+    if (!unsafeMethods.includes(request.method)) return;
+
+    const fetchSiteHeader = request.headers["sec-fetch-site"];
+
+    if (!fetchSiteHeader) {
+      return reply
+        .code(403)
+        .send("Forbidden. Sec-Fetch-Site header is missing.");
     }
-  })
+
+    if (fetchSiteHeader === "cross-site") {
+      return reply.code(403).send("Cross-site requests are forbidden");
+    }
+  });
 
   app.addHook('preHandler', async (request, reply) => {
     const clientVersion = request.headers['x-app-version']
