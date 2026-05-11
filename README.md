@@ -1,7 +1,7 @@
 # What is this?
 
 > [!NOTE]  
-> Update: my current solo stack for "serious" apps is built on slightly different stack, specifically: `AdonisJS` + `Postgres` + `Kita` + `Htmx` + `Vanilla JS` + `Tailwind` + `Kamal`. But the core philosophy described below still applies.
+> Update: my current solo stack for production apps is slightly different, specifically: `AdonisJS` + `Postgres` + `Kita` + `Htmx` + `Vanilla JS` + `Tailwind` + `Kamal`. But the core philosophy described below still applies.
 
 This is my starter template for full-stack web development with Node.js, designed for deployment to Hetzner (or technically, any server). I currently run several production projects using it and couldn't be happier. Feel free to learn from it, modify it, and use it as you wish. 🙏
 
