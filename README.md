@@ -23,7 +23,7 @@ Since low churn, simplicity, and fewer abstractions are the guiding principles, 
 - JS
 - Node (24+)
 - Fastify web server
-- [Htmx](https://dev.tube/video/3GObi93tjZI) for SPA experience
+- Fetch-it custom web component for SPA/Hypermedia experience (simpler than HTMX)
 - [Template literals for server-side templating](https://blog.jim-nielsen.com/2020/switching-from-react-to-js-for-templating)
 - Plain CSS (with scoped css and style tokens)
 - Vanilla JS (can use [Surreal](https://github.com/gnat/surreal) for Locality of Behavior)

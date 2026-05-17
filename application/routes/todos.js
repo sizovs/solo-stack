@@ -1,34 +1,31 @@
-import { db } from "../modules/database/connect.js"
-import { TodoError, Todos } from "../views/Todos.js"
+import { db } from "../modules/database/connect.js";
+import { TodoError, Todos } from "../views/Todos.js";
 
 /**
  * @param {{ app: import("fastify").FastifyInstance }}
  */
 export const initTodos = async ({ app }) => {
-
   app.get("/todos", async (request, reply) => {
-    return render(request, reply)
-  })
+    return render(request, reply);
+  });
 
-  app.delete("/todos/:id", async (request, reply) => {
-    db.sql`delete from todos where id = ${request.params.id}`.run()
-    return render(request, reply)
-  })
+  app.post("/todos/:id/delete", async (request, reply) => {
+    db.sql`delete from todos where id = ${request.params.id}`.run();
+    return render(request, reply);
+  });
 
   app.post("/todos", async (request, reply) => {
-    const description = request.body.description?.trim()
+    const description = request.body.description?.trim();
     if (!description) {
-      return reply
-        .header('HX-Retarget', '#todo-error')
-        .render(TodoError, { error: "Task description is required" })
+      return reply.render(TodoError, { error: "Task description is required" });
     }
 
-    db.sql`insert into todos (description) values (${description})`.run()
-    return render(request, reply)
-  })
+    db.sql`insert into todos (description) values (${description})`.run();
+    return render(request, reply);
+  });
 
   const render = async (request, reply) => {
-    const todos = db.sql`select * from todos`.all()
-    return reply.render(Todos, { todos })
-  }
-}
+    const todos = db.sql`select * from todos`.all();
+    return reply.render(Todos, { todos });
+  };
+};

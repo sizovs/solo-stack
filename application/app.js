@@ -28,10 +28,12 @@ export const startApp = async (options = { port: 0 }) => {
 
   const app = fastify({ trustProxy: true });
 
+  const STATICS_PREFIX = "/static";
+
   // Static files
   app.register(statics, {
-    prefix: "/static",
-    root: process.cwd() + "/static",
+    prefix: STATICS_PREFIX,
+    root: process.cwd() + STATICS_PREFIX,
     decorateReply: false,
     cacheControl: false,
   });
@@ -73,13 +75,6 @@ export const startApp = async (options = { port: 0 }) => {
     );
   });
 
-  app.decorateReply("alert", async function ({ lead, follow, classes }) {
-    return this.header("HX-Retarget", "body")
-      .header("HX-Reselect", "#alert")
-      .header("HX-Reswap", "beforeend show:none")
-      .render(Alert, { lead, follow, classes });
-  });
-
   // CSRF protection
   app.addHook("preHandler", async (request, reply) => {
     const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
@@ -98,10 +93,17 @@ export const startApp = async (options = { port: 0 }) => {
     }
   });
 
+  app.addHook("onRequest", async (request, reply) => {
+    const staticRequest = request.url.includes(STATICS_PREFIX);
+    if (!staticRequest) {
+      reply.setCookie("X-App-Version", `${appVersion}`);
+    }
+  });
+
   app.addHook("preHandler", async (request, reply) => {
-    const clientVersion = request.headers["x-app-version"];
+    const clientVersion = request.cookies["X-App-Version"];
     if (clientVersion && clientVersion < appVersion) {
-      return reply.alert({
+      return reply.render(Alert, {
         lead: "🎉 New Release",
         follow: "Please refresh the page to use the latest version",
       });
@@ -109,7 +111,7 @@ export const startApp = async (options = { port: 0 }) => {
   });
 
   app.decorateReply("render", function (partial, params, mime = "text/html") {
-    const isHx = this.request.headers["hx-request"] === "true";
+    const isHx = this.request.headers["fetch-it"] === "true";
     const template = isHx ? partial : Layout(partial);
     this.type(mime);
     this.send(template({ ...params, appVersion }));
@@ -121,8 +123,8 @@ export const startApp = async (options = { port: 0 }) => {
   app.setErrorHandler((e, request, reply) => {
     captureServerError(e);
 
-    if (request.headers["hx-request"]) {
-      return reply.alert({ lead: "Action failed", follow: e.message });
+    if (request.headers["fetch-it"]) {
+      return reply.render(Alert, { lead: "Action failed", follow: e.message });
     } else {
       return reply.status(e.statusCode || 500).send(e.message);
     }

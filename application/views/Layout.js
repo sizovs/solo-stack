@@ -9,7 +9,7 @@ export const Layout = (Main) => (params) => html`
       <meta name="description" content="A boring todo app" />
 
       <!-- Scripts -->
-      <script src="${hashed(`/static/js/htmx@2.0.6.client.js`)}"></script>
+      <script src="${hashed(`/static/js/fetch-it.js`)}" type="module"></script>
       <script src="${hashed(`/static/js/css-scope-inline.js`)}"></script>
       <script
         type="module"
@@ -45,9 +45,12 @@ export const Layout = (Main) => (params) => html`
             }
           }
         </style>
-        <a href="/" hx-boost="true">boring.todos</a>
+        <a href="/">boring.todos</a>
       </header>
       ${Main(params)}
+
+      <!-- Placeholder for alerts -->
+      <div id="alert"></div>
       <footer>
         <style>
           me {
@@ -59,7 +62,7 @@ export const Layout = (Main) => (params) => html`
           }
         </style>
         © ${new Date().getFullYear()}
-        <a href="https://sizovs.net">Eduards Sizovs</a>. All Rights Reserved.
+        <a href="https://sizovs.net">Eduard Sizov</a>. All Rights Reserved.
       </footer>
     </body>
   </html>
