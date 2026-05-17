@@ -1,18 +1,17 @@
-import fastify from "fastify";
 import formBody from "@fastify/formbody";
-import statics from "@fastify/static";
 import session from "@fastify/secure-session";
-import { initAdmin } from "./routes/admin.js";
-import { initTodos } from "./routes/todos.js";
-import { logger } from "./modules/logger.js";
-import { errors } from "./modules/errors.js";
-import { Layout } from "./views/Layout.js";
-import { Alert } from "./views/Alert.js";
+import statics from "@fastify/static";
+import fastify from "fastify";
 import { performance } from "node:perf_hooks";
 import { db } from "./modules/database/connect.js";
+import { errors } from "./modules/errors.js";
+import { logger } from "./modules/logger.js";
+import { appVersion } from "./modules/version.js";
+import { initAdmin } from "./routes/admin.js";
+import { initTodos } from "./routes/todos.js";
+import { Alert } from "./views/Alert.js";
 
 export const startApp = async (options = { port: 0 }) => {
-  let appVersion = 1; // bump the version up to force client refresh.
   let health = 404; // app is unhealthy until cluster signals otherwise.
 
   const isDevMode = process.env.NODE_ENV === "development";
@@ -96,28 +95,29 @@ export const startApp = async (options = { port: 0 }) => {
   app.addHook("preHandler", async (request, reply) => {
     const clientVersion = request.headers["x-client-version"];
     if (clientVersion && clientVersion < appVersion) {
-      return reply.render(Alert, {
-        lead: "🎉 New Release",
-        follow: "Please refresh the page to use the latest version",
-      });
+      return reply.send(
+        Alert({
+          lead: "🎉 New Release",
+          follow: "Please refresh the page to use the latest version",
+        }).render(),
+      );
     }
   });
 
-  app.decorateReply("render", function (partial, params, mime = "text/html") {
-    const isPartialRequest = this.request.headers["fetch-it"] === "true";
-    const template = isPartialRequest ? partial : Layout(partial);
-    this.type(mime);
-    this.send(template({ ...params, appVersion }));
+  const captureClientError = errors({
+    appVersion,
+    source: "client",
   });
-
-  const captureClientError = errors({ appVersion, source: "client" });
-  const captureServerError = errors({ appVersion, source: "server" });
+  const captureServerError = errors({
+    appVersion,
+    source: "server",
+  });
 
   app.setErrorHandler((e, request, reply) => {
     captureServerError(e);
 
     if (request.headers["fetch-it"]) {
-      return reply.render(Alert, { lead: "Action failed", follow: e.message });
+      return Alert({ lead: "Action failed", follow: e.message }).render();
     } else {
       return reply.status(e.statusCode || 500).send(e.message);
     }
@@ -139,7 +139,6 @@ export const startApp = async (options = { port: 0 }) => {
   });
 
   const healthy = () => (health = 200);
-  const bumpVersion = () => appVersion++;
 
   const url = await app.listen(options);
 
@@ -154,5 +153,5 @@ export const startApp = async (options = { port: 0 }) => {
     process.exit(0);
   });
 
-  return { url, bumpVersion, healthy };
+  return { url, healthy };
 };

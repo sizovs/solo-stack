@@ -1,27 +1,44 @@
-export const html = (fragments, ...values) => {
-  let out = ""
-  fragments.forEach((string, i) => {
-    const value = values[i]
-
-    // Array - Join to string and output with value
-    if (Array.isArray(value)) {
-      out += string + value.join("")
-    }
-    // String - Output with value
-    else if (typeof value === "string") {
-      out += string + value
-    }
-    // Number - Coerce to string and output with value
-    // This would happen anyway, but for clarity's sake on what's happening here
-    else if (typeof value === "number") {
-      out += string + String(value)
-    }
-    // object, undefined, null, boolean - Don't output a value.
-    else {
-      out += string
-    }
-  })
-
-  return out
+class HtmlResult {
+  constructor(content) {
+    this.content = content;
+  }
+  render() {
+    return new Response(this.content, {
+      headers: { "Content-Type": "text/html" },
+    });
+  }
 }
 
+const escape = (text) => {
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&apos;",
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char]);
+};
+
+export const html = (fragments, ...values) => {
+  let content = "";
+
+  const renderValue = (value, rawFlag) => {
+    if (Array.isArray(value))
+      return value.map((v) => renderValue(v, rawFlag)).join("");
+    if (typeof value === "object" && value !== null && "render" in value)
+      return value.content;
+    if (typeof value === "string" || typeof value === "number")
+      return rawFlag ? String(value) : escape(String(value));
+
+    return "";
+  };
+
+  fragments.forEach((string, i) => {
+    const rawFlag = string.endsWith("$");
+    content += rawFlag ? string.slice(0, -1) : string;
+    if (i < values.length) content += renderValue(values[i], rawFlag);
+  });
+
+  return new HtmlResult(content);
+};

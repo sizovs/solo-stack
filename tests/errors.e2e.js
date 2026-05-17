@@ -1,5 +1,6 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { startApp } from "../application/app.js";
+import { bumpVersion } from "../application/modules/version.js";
 
 let app;
 
@@ -13,7 +14,7 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test("shows warning on new version", async () => {
-  app.bumpVersion();
+  bumpVersion();
   await page.getByTestId("todo-input").press("Enter");
   await expect(page.getByRole("alert")).toHaveText(
     "🎉 New Release | Please refresh the page to use the latest version",

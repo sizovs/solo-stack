@@ -1,6 +1,7 @@
 import { hashed } from "../modules/hasher.js";
 import { html } from "../modules/html.js";
-export const Layout = (Main) => (params) => html`
+import { appVersion } from "../modules/version.js";
+export const Layout = (content) => html`
   <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -26,7 +27,7 @@ export const Layout = (Main) => (params) => html`
       <title>Todos</title>
     </head>
 
-    <body data-appversion="${params.appVersion}">
+    <body data-appversion="${appVersion}">
       <style>
         me {
           font-family: var(--font-sans);
@@ -47,7 +48,7 @@ export const Layout = (Main) => (params) => html`
         </style>
         <a href="/">boring.todos</a>
       </header>
-      ${Main(params)}
+      ${content}
 
       <!-- Placeholder for alerts -->
       <div id="alert-placeholder"></div>

@@ -1,4 +1,5 @@
 import { db } from "../modules/database/connect.js";
+import { Layout } from "../views/Layout.js";
 import { TodoError, Todos } from "../views/Todos.js";
 
 /**
@@ -6,26 +7,26 @@ import { TodoError, Todos } from "../views/Todos.js";
  */
 export const initTodos = async ({ app }) => {
   app.get("/todos", async (request, reply) => {
-    return render(request, reply);
+    return todos();
   });
 
   app.post("/todos/:id/delete", async (request, reply) => {
     db.sql`delete from todos where id = ${request.params.id}`.run();
-    return render(request, reply);
+    return todos();
   });
 
   app.post("/todos", async (request, reply) => {
     const description = request.body.description?.trim();
     if (!description) {
-      return reply.render(TodoError, { error: "Task description is required" });
+      return TodoError({ error: "Task description is required" }).render();
     }
 
     db.sql`insert into todos (description) values (${description})`.run();
-    return render(request, reply);
+    return todos();
   });
 
-  const render = async (request, reply) => {
+  const todos = async () => {
     const todos = db.sql`select * from todos`.all();
-    return reply.render(Todos, { todos });
+    return Layout(Todos({ todos })).render();
   };
 };
