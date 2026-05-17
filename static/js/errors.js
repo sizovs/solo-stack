@@ -68,31 +68,3 @@ window.addEventListener("beforeunload", flush);
 
 // Periodic flush
 setInterval(flush, FLUSH_INTERVAL);
-
-// ------------
-// Closeables (E.g. Alerts)
-// ------------
-document.addEventListener("click", (event) => {
-  const close = event.target.closest("[data-js-close]");
-  if (close) {
-    const closeable = close.closest("[data-js-closeable]");
-    closeable.remove();
-  }
-});
-
-// ------------
-// Auto-remove
-// ------------
-const observer = new MutationObserver((mutations) => {
-  for (const mutation of mutations) {
-    for (const node of mutation.addedNodes) {
-      if (node.nodeType !== 1) continue; // skip text nodes
-      const timing = node.getAttribute?.("data-js-remove-me");
-      if (timing) {
-        setTimeout(() => node.remove(), Number(timing));
-      }
-    }
-  }
-});
-
-observer.observe(document.body, { childList: true, subtree: true });

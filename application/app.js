@@ -93,15 +93,8 @@ export const startApp = async (options = { port: 0 }) => {
     }
   });
 
-  app.addHook("onRequest", async (request, reply) => {
-    const staticRequest = request.url.includes(STATICS_PREFIX);
-    if (!staticRequest) {
-      reply.setCookie("X-App-Version", `${appVersion}`);
-    }
-  });
-
   app.addHook("preHandler", async (request, reply) => {
-    const clientVersion = request.cookies["X-App-Version"];
+    const clientVersion = request.headers["x-client-version"];
     if (clientVersion && clientVersion < appVersion) {
       return reply.render(Alert, {
         lead: "🎉 New Release",
@@ -111,8 +104,8 @@ export const startApp = async (options = { port: 0 }) => {
   });
 
   app.decorateReply("render", function (partial, params, mime = "text/html") {
-    const isHx = this.request.headers["fetch-it"] === "true";
-    const template = isHx ? partial : Layout(partial);
+    const isPartialRequest = this.request.headers["fetch-it"] === "true";
+    const template = isPartialRequest ? partial : Layout(partial);
     this.type(mime);
     this.send(template({ ...params, appVersion }));
   });

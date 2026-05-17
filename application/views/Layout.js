@@ -10,10 +10,10 @@ export const Layout = (Main) => (params) => html`
 
       <!-- Scripts -->
       <script src="${hashed(`/static/js/fetch-it.js`)}" type="module"></script>
-      <script src="${hashed(`/static/js/css-scope-inline.js`)}"></script>
+      <script src="${hashed(`/static/js/scoped-css.js`)}"></script>
       <script
         type="module"
-        src="${hashed(`/static/js/app.client.js`)}"
+        src="${hashed(`/static/js/errors.js`)}"
         defer
       ></script>
 
@@ -50,7 +50,7 @@ export const Layout = (Main) => (params) => html`
       ${Main(params)}
 
       <!-- Placeholder for alerts -->
-      <div id="alert"></div>
+      <div id="alert-placeholder"></div>
       <footer>
         <style>
           me {
