@@ -1,21 +1,27 @@
+import { hashed } from "../modules/hasher.js";
 import { html } from "../modules/html.js";
-
-export const Layout = Main => params => html`
+export const Layout = (Main) => (params) => html`
   <!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="description" content="A boring todo app" />
+
       <!-- Scripts -->
-      <script src="/static/js/htmx@2.0.6.client.js"></script>
-      <script src="/static/js/css-scope-inline.js"></script>
-      <script type="module" src="/static/js/app.client.js" defer></script>
+      <script src="${hashed(`/static/js/htmx@2.0.6.client.js`)}"></script>
+      <script src="${hashed(`/static/js/css-scope-inline.js`)}"></script>
+      <script
+        type="module"
+        src="${hashed(`/static/js/app.client.js`)}"
+        defer
+      ></script>
+
       <!-- Styles -->
-      <link rel="stylesheet" href="/static/css/reset.css" />
-      <link rel="stylesheet" href="/static/css/app.css" />
-      <link rel="apple-touch-icon" href="/static/favicon.png" />
-      <link rel="icon" href="/static/favicon.png" />
+      <link rel="stylesheet" href="${hashed(`/static/css/reset.css`)}" />
+      <link rel="stylesheet" href="${hashed(`/static/css/app.css`)}" />
+      <link rel="apple-touch-icon" href="${hashed(`/static/favicon.png`)}" />
+      <link rel="icon" href="${hashed(`/static/favicon.png`)}" />
 
       <title>Todos</title>
     </head>
@@ -43,17 +49,17 @@ export const Layout = Main => params => html`
       </header>
       ${Main(params)}
       <footer>
-          <style>
-              me {
-                text-align: center;
-                max-width: var(--width-lg);
-                margin: 0 auto;
-                padding: var(--size-8) 0;
-                color: var(--color-grey-600);
-              }
-          </style>
-          © ${new Date().getFullYear()}
-          <a href="https://sizovs.net">Eduards Sizovs</a>. All Rights Reserved.
+        <style>
+          me {
+            text-align: center;
+            max-width: var(--width-lg);
+            margin: 0 auto;
+            padding: var(--size-8) 0;
+            color: var(--color-grey-600);
+          }
+        </style>
+        © ${new Date().getFullYear()}
+        <a href="https://sizovs.net">Eduards Sizovs</a>. All Rights Reserved.
       </footer>
     </body>
   </html>
