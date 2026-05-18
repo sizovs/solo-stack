@@ -38,7 +38,7 @@ Since low churn, simplicity, and fewer abstractions are the guiding principles, 
 
 **Simplicity is achieved when there is nothing left to remove**. The project is ~~built~~ (actually, there is no build step and no sourcemaps) and shipped straight from the local dev machine, eliminating the need for Docker, artifact repositories, and external CI servers. By following the #1 rule of distributing systems — don't distribute — and choosing SQLite, we achieve parity between development and production environments. By eliminating heavy tools and abstractions we can quickly spin up a local dev server, run all tests in parallel against the real database, and know within seconds if our app works.
 
-☺️ The dependencies are minimal, with 0 vulnerabilities, giving a refreshing feel after dealing with bloated frameworks. Just think about it—you can manually track the GitHub repositories of these projects and stay updated easily. There’s not much to follow, no complicated frameworks to know – just the fundamentals and a few libraries. Enjoy low cognitive load, low anxiety, and peace of mind.
+The dependencies are minimal, with 0 vulnerabilities, giving a refreshing feel after dealing with bloated frameworks. Just think about it—you can manually track the GitHub repositories of these projects and stay updated easily. No upgrades and breaking changes forced on you by an underlying framework release cycle – you build on stable standards that don't change often. There’s not much to follow, no complicated frameworks to know – just the fundamentals and a few libraries. Enjoy low cognitive load, low anxiety, and peace of mind. ☺️
 
 # Running & Deploying
 
