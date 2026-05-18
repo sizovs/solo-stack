@@ -30,6 +30,7 @@ Since low churn, simplicity, and fewer abstractions are the guiding principles, 
 - [Template literals for server-side templating](https://blog.jim-nielsen.com/2020/switching-from-react-to-js-for-templating)
 - Plain CSS (with scoped css and style tokens)
 - Vanilla JS that lives next to components (Locality of Behaviour)
+- Static asset hashing without bundlers
 - Playwright for E2E tests
 - SQLite w/o ORMs and query builders
 - Litestream for streaming DB replication
