@@ -46,7 +46,7 @@ export class FetchIt extends HTMLElement {
       });
 
       if (!response.ok) return;
-
+      this.clientSideSwap(form.action);
       const text = await response.text();
       const { html, title } = this.parse(text);
       this.inject(html, title);
@@ -65,7 +65,7 @@ export class FetchIt extends HTMLElement {
     try {
       const response = await fetch(a.href, { headers: { ...DEFAULT_HEADERS } });
       if (!response.ok) return;
-
+      this.clientSideSwap(a.href);
       const text = await response.text();
       const { html, title } = this.parse(text);
       this.inject(html, title);
@@ -77,6 +77,22 @@ export class FetchIt extends HTMLElement {
     } finally {
       this.progress(false);
     }
+  }
+
+  // Uses the URL hash to find a pre-rendered <template> on the page and inject its content.
+  // <form action="/like/42#like-42-liked">     → injects content of <template id="like-42-liked">
+  // <form action="/unlike/42#like-42-unliked"> → injects content of <template id="like-42-unliked">
+  //
+  // <template id="like-42-liked">
+  //   <form id="like-42" action="/unlike/42#like-42-unliked" method="post">...</form>
+  //   <div id="like-count-header">43 likes</div>
+  // </template>
+  clientSideSwap(url) {
+    const hash = new URL(url).hash;
+    if (!hash) return;
+    const tmpl = document.querySelector(hash);
+    if (!tmpl) return;
+    this.inject(tmpl.content);
   }
 
   inject(html, title) {
