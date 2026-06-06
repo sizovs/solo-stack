@@ -11,6 +11,10 @@ export const Layout = (content) => html`
 
       <!-- Scripts -->
       <script src="${hashed(`/static/js/fetch-it.js`)}" type="module"></script>
+      <script
+        src="${hashed(`/static/js/preload-it.js`)}"
+        type="module"
+      ></script>
       <script src="${hashed(`/static/js/scoped-css.js`)}"></script>
       <script
         type="module"

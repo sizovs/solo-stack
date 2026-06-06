@@ -53,12 +53,12 @@ export const Todo = (todo) => html`
 `;
 
 export const TodoError = ({ error = "" } = {}) => html`
-  <small data-testid="todo-error" id="todo-error">
+  <small data-testid="todo-error" id="todo-error"
+    >${error}
     <style>
       me {
         color: var(--color-red-600);
       }
     </style>
-    ${error}
   </small>
 `;
