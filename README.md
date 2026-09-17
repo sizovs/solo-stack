@@ -1,5 +1,5 @@
 > [!NOTE]
-> My current setup uses Postgres instead of SQLite mainly because I needed read replicas and zero-downtime schema migrations in some apps, and also found features like LISTEN/NOTIFY and SKIP LOCKED super useful. Another key factor was that Litestream recently went through a major AI-driven rewrite that introduced a number of bugs, including reports of data corruption, which made SQLite incremental backups unreliable. I’m also using TypeScript since Node now supports it natively. If you want to see the full setup, email me and I’ll share the repo.
+> My current setup uses Postgres instead of SQLite mainly because I needed read replicas and zero-downtime schema migrations in some apps, and also found features like LISTEN/NOTIFY and SKIP LOCKED super useful. Another key factor was that Litestream recently went through a major AI-driven rewrite that introduced a number of bugs, including reports of data corruption, which made SQLite incremental backups unreliable. I’m also using TypeScript since Node now supports it natively. And HTMX 4 instead of a custom "fetch-it" web component. If you want to see the full setup, email me and I’ll share the repo.
 
 # What is this?
 
